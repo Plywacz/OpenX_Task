@@ -6,6 +6,7 @@ Date: 05.03.2020
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 import plywacz.openx.model.Post;
 import plywacz.openx.model.User;
 
@@ -14,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
+@Component
 public class DataDownloaderImpl implements DataDownloader {
     private final ObjectMapper mapper;
     private URL userDataUrl;
@@ -26,10 +28,9 @@ public class DataDownloaderImpl implements DataDownloader {
             userDataUrl = new URL(USER_SOURCE);
             postDataUrl = new URL(POST_SOURCE);
         }
-        catch (MalformedURLException e) {
+        catch (IOException e) {
             e.printStackTrace();
-            System.out.println("MalformedURLException occured, shutting down application");
-            System.exit(1);
+           throw  new RuntimeException("couldnt connect with api "); //todo: change exc
         }
     }
 
@@ -41,7 +42,7 @@ public class DataDownloaderImpl implements DataDownloader {
         }
         catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Couldn't fetch user data from remote service, shutting down application");
+            throw  new RuntimeException("Couldn't fetch user data from remote service ");
         }
         return userSet;
     }
@@ -54,7 +55,7 @@ public class DataDownloaderImpl implements DataDownloader {
         }
         catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Couldn't fetch post data from remote service, shutting down application");
+            throw  new RuntimeException("Couldn't fetch post data from remote service ");
         }
         return postSet;
     }

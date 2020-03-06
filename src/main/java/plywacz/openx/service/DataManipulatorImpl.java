@@ -4,12 +4,14 @@ Author: BeGieU
 Date: 05.03.2020
 */
 
+import org.springframework.stereotype.Component;
 import plywacz.openx.model.Post;
 import plywacz.openx.model.User;
 import plywacz.openx.model.UserPostContainer;
 
 import java.util.*;
 
+@Component
 public class DataManipulatorImpl implements DataManipulator {
 
     //maximum integer value that can be represented by Double
@@ -17,6 +19,9 @@ public class DataManipulatorImpl implements DataManipulator {
 
     @Override
     public Set<UserPostContainer> joinData(Set<User> users, Set<Post> posts) {
+        if (users == null || posts == null)
+            throw new RuntimeException("joinData params must not be null");
+
         Set<UserPostContainer> userPostContainers = new HashSet<>();
         users.forEach(user -> userPostContainers.add(new UserPostContainer(user)));
 
@@ -42,6 +47,9 @@ public class DataManipulatorImpl implements DataManipulator {
 
     @Override
     public List<String> countPosts(Set<UserPostContainer> users) {
+        if (users == null)
+            throw new RuntimeException("countPost param must not be null");
+
         var stringList = new LinkedList<String>();
         users.forEach(user -> stringList.add(user.getPostCountString()));
 
@@ -50,6 +58,9 @@ public class DataManipulatorImpl implements DataManipulator {
 
 
     @Override public List<String> findDuplicateTitles(Set<Post> posts) {
+        if (posts == null)
+            throw new RuntimeException("findDuplicateTitles param cannot be null"); //todo throw appropriate exc
+
         var duplicateChecker = new HashSet<String>();
         var duplicateList = new LinkedList<String>();
 
@@ -64,6 +75,9 @@ public class DataManipulatorImpl implements DataManipulator {
 
     @Override
     public Map<User, User> findClosestUser(Set<User> users) {
+        if(users==null)
+            throw new RuntimeException("findClosestUser param cannot be null"); //todo change exception
+
         // O(n^2) loop because in some cases for user1, user2 is closest and
         //for user2, user3 is closest
         var closestUserMap = new HashMap<User, User>();
@@ -112,16 +126,6 @@ public class DataManipulatorImpl implements DataManipulator {
         return (c * EARTH_RADIUS_KM);
     }
 
-    public static void main(String[] args) {
-        var downloader = new DataDownloaderImpl();
-        var dm = new DataManipulatorImpl();
-
-        var userPostMap = dm.joinData(downloader.fetchUserData(), downloader.fetchPostData());
-        dm.countPosts(userPostMap);
-        dm.findDuplicateTitles(downloader.fetchPostData());
-        dm.findClosestUser(downloader.fetchUserData());
-
-    }
 }
 
 
