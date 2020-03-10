@@ -69,7 +69,7 @@ class DataServiceFacadeImplTest {
     @Test
     void findClosestUsers() {
         when(downloader.fetchUserData()).thenReturn(new HashSet<User>());
-        when(manipulator.findClosestUser(anySet())).thenReturn(new HashMap<User,User>());
+      //  when(manipulator.findClosestUser(anySet())).thenReturn(new HashMap<User,User>());
 
         var res = dataServiceFacade.findClosestUsers();
         assertNotNull(res);

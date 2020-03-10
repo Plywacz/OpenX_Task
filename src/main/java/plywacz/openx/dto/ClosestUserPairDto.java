@@ -9,23 +9,31 @@ import plywacz.openx.model.User;
 import java.util.Objects;
 
 public class ClosestUserPairDto {
-    private  User user1;
-    private  User user2;
+    private  User firstUser;
+    private  User secondUser;
 
-    public void setUser1(User user1) {
-        this.user1 = user1;
+    public ClosestUserPairDto() {
     }
 
-    public void setUser2(User user2) {
-        this.user2 = user2;
+    public ClosestUserPairDto(User firstUser, User secondUser) {
+        this.firstUser = firstUser;
+        this.secondUser = secondUser;
     }
 
-    public User getUser1() {
-        return user1;
+    public void setFirstUser(User firstUser) {
+        this.firstUser = firstUser;
     }
 
-    public User getUser2() {
-        return user2;
+    public void setSecondUser(User secondUser) {
+        this.secondUser = secondUser;
+    }
+
+    public User getFirstUser() {
+        return firstUser;
+    }
+
+    public User getSecondUser() {
+        return secondUser;
     }
 
     @Override public boolean equals(Object o) {
@@ -34,18 +42,18 @@ public class ClosestUserPairDto {
         if (o == null || getClass() != o.getClass())
             return false;
         ClosestUserPairDto that = (ClosestUserPairDto) o;
-        return Objects.equals(user1, that.user1) &&
-                Objects.equals(user2, that.user2);
+        return Objects.equals(firstUser, that.firstUser) &&
+                Objects.equals(secondUser, that.secondUser);
     }
 
     @Override public int hashCode() {
-        return Objects.hash(user1, user2);
+        return Objects.hash(firstUser, secondUser);
     }
 
     @Override public String toString() {
         return "ClosestUserPairDto{" +
-                "user1=" + user1 +
-                ", user2=" + user2 +
+                "user1=" + firstUser +
+                ", user2=" + secondUser +
                 '}';
     }
 }

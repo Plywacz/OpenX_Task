@@ -25,7 +25,7 @@ public interface DataManipulator {
      *
      * @param users set of all users
      * @param posts set of all posts
-     * @return set of objects which represents user and his posts
+     * @return set of objects which represents user and his posts, returns empty set if no data
      */
     Set<UserPostContainer> joinData(Set<User> users, Set<Post> posts);
 
@@ -36,6 +36,7 @@ public interface DataManipulator {
      *
      * @param users set of objects that contains user and his posts
      * @return list of strings that says how many posts belongs to particular user.
+     * Returns empty list if no users given.
      */
     List<String> countPosts(Set<UserPostContainer> users);
 
@@ -52,7 +53,8 @@ public interface DataManipulator {
      * Takes set of users, and maps every user with one user who is closest to him.
      *
      * @param users set of users.
-     * @return map where key is one user and value is user who lives closest to key user.
+     * @return set of pairs that one pair object contain two closest users.
+     * Returns empty set when no users given or when given set that contains one user
      */
     Set<ClosestUserPairDto> findClosestUser(Set<User> users);
 }

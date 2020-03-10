@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import plywacz.openx.model.*;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,9 +75,30 @@ class DataManipulatorImplTest {
 
     @Test
     void joinData_nullParams() {
-        assertThrows(RuntimeException.class, () -> {
-            dataManipulator.joinData(null, null);
-        });
+        var res = dataManipulator.joinData(null, null);
+        assertEquals(0, res.size());
+    }
+
+    @Test
+    void joinData_usersNull() {
+        var res = dataManipulator.joinData(null, new HashSet<>());
+        assertEquals(0, res.size());
+    }
+
+    @Test
+    void joinData_postsNull() {
+        var user = new User();
+        user.setId(1L);
+
+        var user2 = new User();
+        user2.setId(2L);
+        var userSet = new HashSet<User>();
+        userSet.add(user);
+        userSet.add(user2);
+
+        var res = dataManipulator.joinData(userSet, null);
+        assertEquals(2, res.size());
+        assertEquals(0, res.iterator().next().getPosts().size());
     }
 
     @Test
@@ -131,15 +151,45 @@ class DataManipulatorImplTest {
 
     }
 
+    //not possible
+    //    @Test
+    //    void countPosts_NullParam() {
+    //        assertThrows(RuntimeException.class, () -> dataManipulator.countPosts(null));
+    //    }
+
     @Test
-    void countPosts_NullParam() {
-        assertThrows(RuntimeException.class, () -> dataManipulator.countPosts(null));
+    void countPosts_noUsersGiven() {
+        var res = dataManipulator.countPosts(new HashSet<>());
+        assertEquals(0, res.size());
     }
 
     @Test
-    void countPosts_emptyParam() {
-        var res = dataManipulator.countPosts(new HashSet<>());
-        assertEquals(0, res.size());
+    void countPosts_usersDontHavePosts() {
+        var user1 = new User();
+        user1.setUsername("user1");
+        user1.setId(1L);
+
+        var user2 = new User();
+        user2.setUsername("user2");
+        user2.setId(2L);
+
+        var upc1 = new UserPostContainer(user1);
+        var upc2 = new UserPostContainer(user2);
+
+        var upcSet = new HashSet<UserPostContainer>();
+        upcSet.add(upc1);
+        upcSet.add(upc2);
+
+
+        var res = dataManipulator.countPosts(upcSet);
+        assertEquals(2, res.size());
+
+        for (var str : res) {
+            if (str.contains("user1"))
+                assertEquals("user1 napisał(a) 0 postów", str);
+            else if (str.contains("user2"))
+                assertEquals("user2 napisał(a) 0 postów", str);
+        }
     }
 
     @Test
@@ -175,11 +225,6 @@ class DataManipulatorImplTest {
     }
 
     @Test
-    void findDuplicateTitles_NullParam() {
-        assertThrows(RuntimeException.class, () -> dataManipulator.findDuplicateTitles(null));
-    }
-
-    @Test
     void findDuplicateTitles_EmptyPosts() {
         var res = dataManipulator.findDuplicateTitles(new HashSet<Post>());
         assertEquals(0, res.size());
@@ -210,45 +255,54 @@ class DataManipulatorImplTest {
 
         var user1 = new User();
         user1.setAddress(adr1);
+        user1.setUsername("user1");
 
         var user2 = new User();
         user2.setAddress(adr2);
+        user2.setUsername("user2");
 
         var user3 = new User();
         user3.setAddress(adr3);
+        user3.setUsername("user3");
 
         var userSet = new HashSet<User>();
         userSet.add(user1);
         userSet.add(user2);
         userSet.add(user3);
 
-        var map = dataManipulator.findClosestUser(userSet);
+        var pairs = dataManipulator.findClosestUser(userSet);
 
-        assertEquals(3, map.size());
-        assertEquals(user2, map.get(user1));// tarnow -> krakow
-        assertEquals(user1, map.get(user2));// krakow -> tarnow
-        assertEquals(user2, map.get(user3));// wroclaw -> krk
+        assertEquals(3, pairs.size());
+        //                assertEquals(user2, map.get(user1));// tarnow -> krakow
+        //                assertEquals(user1, map.get(user2));// krakow -> tarnow
+        //                assertEquals(user2, map.get(user3));// wroclaw -> krk
+        for (var pair : pairs) {
+            if (pair.getFirstUser().getUsername().equals("user1")){ //tarnow -> krakow
+                assertEquals(user2,pair.getSecondUser());
+            }else if(pair.getFirstUser().getUsername().equals("user2")){// krakow -> tarnow
+                assertEquals(user1,pair.getSecondUser());
+            }else{// wroclaw -> krk
+                assertEquals(user2,pair.getSecondUser());
+            }
+
+
+        }
     }
 
     @Test
-    void findClosestUser_NullParam() {
-        assertThrows(RuntimeException.class, () -> dataManipulator.findClosestUser(null));
-    }
-
-    @Test
-    void findClosestUser_EmptyParam() {
+    void findClosestUser_noUsers() {
         var res = dataManipulator.findClosestUser(new HashSet<User>());
         assertEquals(0, res.size());
     }
 
     @Test
     void findClosestUser_OneUser() {
-        var set=new HashSet<User>();
-        var u1=new User();
+        var set = new HashSet<User>();
+        var u1 = new User();
         set.add(u1);
 
         var res = dataManipulator.findClosestUser(set);
-        assertEquals(1, res.size());
-        assertEquals(null,res.get(u1));
+        assertEquals(0, res.size());
+        //   assertEquals(null,res.get(u1));
     }
 }

@@ -6,6 +6,7 @@ Date: 05.03.2020
 
 import org.springframework.stereotype.Component;
 import plywacz.openx.dto.ClosestUserPairDto;
+import plywacz.openx.exceptions.RemoteApiException;
 import plywacz.openx.model.Post;
 import plywacz.openx.model.User;
 import plywacz.openx.model.UserPostContainer;
@@ -20,16 +21,18 @@ public class DataManipulatorImpl implements DataManipulator {
 
     @Override
     public Set<UserPostContainer> joinData(Set<User> users, Set<Post> posts) {
-        if (users == null || posts == null)
-            throw new RuntimeException("joinData params must not be null");
-
         Set<UserPostContainer> userPostContainers = new HashSet<>();
+        if (users == null)
+            return userPostContainers;
         users.forEach(user -> userPostContainers.add(new UserPostContainer(user)));
+
+        if (posts == null)
+            return userPostContainers;
 
         posts.forEach(post -> {
             var postOwner = findUser(userPostContainers, post.getUserId());
-            if (postOwner == null) {//todo if find user return null it means downloaded data is faulty
-                throw new RuntimeException("given data is faulty. Post: " + post + " has no owner !!!");
+            if (postOwner == null) {//todo if finduser returns null it means downloaded data is faulty
+                throw new RemoteApiException("data from remote api is faulty. Post: " + post + " has no owner !!!");
             }
             postOwner.addPost(post);
         });
@@ -48,9 +51,6 @@ public class DataManipulatorImpl implements DataManipulator {
 
     @Override
     public List<String> countPosts(Set<UserPostContainer> users) {
-        if (users == null)
-            throw new RuntimeException("countPost param must not be null");
-
         var stringList = new LinkedList<String>();
         users.forEach(user -> stringList.add(user.getPostCountString()));
 
@@ -59,9 +59,6 @@ public class DataManipulatorImpl implements DataManipulator {
 
 
     @Override public List<String> findDuplicateTitles(Set<Post> posts) {
-        if (posts == null)
-            throw new RuntimeException("findDuplicateTitles param cannot be null"); //todo throw appropriate exc
-
         var duplicateChecker = new HashSet<String>();
         var duplicateList = new LinkedList<String>();
 
@@ -76,19 +73,19 @@ public class DataManipulatorImpl implements DataManipulator {
 
     @Override
     public Set<ClosestUserPairDto> findClosestUser(Set<User> users) {
-        if(users==null)
-            throw new RuntimeException("there are no users in remote api"); //todo change exception
+        var closestPairSet = new HashSet<ClosestUserPairDto>();
+        if (users.size() <= 1)
+            return closestPairSet;
 
-        var closestPairSet=new HashSet<ClosestUserPairDto>();
         for (var user1 : users) {
 
             double minDist = EARTH_CIRCUIT;
-            var closestPair=new ClosestUserPairDto();
-            closestPair.setUser1(user1);
+            var closestPair = new ClosestUserPairDto();
+            closestPair.setFirstUser(user1);
             for (var user2 : users) {
                 if (!user1.equals(user2) && calculateDistanceBetweenUsers(user1, user2) < minDist) {
                     minDist = calculateDistanceBetweenUsers(user1, user2);
-                    closestPair.setUser2(user2);
+                    closestPair.setSecondUser(user2);
                 }
             }
             closestPairSet.add(closestPair);
