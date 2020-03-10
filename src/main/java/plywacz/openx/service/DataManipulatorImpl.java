@@ -32,7 +32,8 @@ public class DataManipulatorImpl implements DataManipulator {
         posts.forEach(post -> {
             var postOwner = findUser(userPostContainers, post.getUserId());
             if (postOwner == null) {//todo if finduser returns null it means downloaded data is faulty
-                throw new RemoteApiException("data from remote api is faulty. Post: " + post + " has no owner !!!");
+                //throw new RemoteApiException("data from remote api is faulty. Post: " + post + " has no owner !!!");;
+                return; //if post is faulty then skip that post
             }
             postOwner.addPost(post);
         });
