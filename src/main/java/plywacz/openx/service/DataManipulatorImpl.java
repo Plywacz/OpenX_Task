@@ -5,6 +5,7 @@ Date: 05.03.2020
 */
 
 import org.springframework.stereotype.Component;
+import plywacz.openx.dto.ClosestUserPairDto;
 import plywacz.openx.model.Post;
 import plywacz.openx.model.User;
 import plywacz.openx.model.UserPostContainer;
@@ -74,26 +75,26 @@ public class DataManipulatorImpl implements DataManipulator {
     }
 
     @Override
-    public Map<User, User> findClosestUser(Set<User> users) {
+    public Set<ClosestUserPairDto> findClosestUser(Set<User> users) {
         if(users==null)
-            throw new RuntimeException("findClosestUser param cannot be null"); //todo change exception
+            throw new RuntimeException("there are no users in remote api"); //todo change exception
 
-        // O(n^2) loop because in some cases for user1, user2 is closest and
-        //for user2, user3 is closest
-        var closestUserMap = new HashMap<User, User>();
+        var closestPairSet=new HashSet<ClosestUserPairDto>();
         for (var user1 : users) {
-            User closestUser = null;
+
             double minDist = EARTH_CIRCUIT;
+            var closestPair=new ClosestUserPairDto();
+            closestPair.setUser1(user1);
             for (var user2 : users) {
                 if (!user1.equals(user2) && calculateDistanceBetweenUsers(user1, user2) < minDist) {
                     minDist = calculateDistanceBetweenUsers(user1, user2);
-                    closestUser = user2;
+                    closestPair.setUser2(user2);
                 }
             }
-            closestUserMap.put(user1, closestUser);
+            closestPairSet.add(closestPair);
         }
 
-        return closestUserMap;
+        return closestPairSet;
     }
 
     /**

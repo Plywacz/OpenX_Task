@@ -4,12 +4,12 @@ Author: BeGieU
 Date: 05.03.2020
 */
 
+import plywacz.openx.dto.ClosestUserPairDto;
 import plywacz.openx.model.Post;
 import plywacz.openx.model.User;
 import plywacz.openx.model.UserPostContainer;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -54,5 +54,5 @@ public interface DataManipulator {
      * @param users set of users.
      * @return map where key is one user and value is user who lives closest to key user.
      */
-    Map<User, User> findClosestUser(Set<User> users);
+    Set<ClosestUserPairDto> findClosestUser(Set<User> users);
 }

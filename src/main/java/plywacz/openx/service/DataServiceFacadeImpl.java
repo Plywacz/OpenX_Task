@@ -5,11 +5,10 @@ Date: 06.03.2020
 */
 
 import org.springframework.stereotype.Component;
-import plywacz.openx.model.User;
+import plywacz.openx.dto.ClosestUserPairDto;
 import plywacz.openx.model.UserPostContainer;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -37,7 +36,7 @@ public class DataServiceFacadeImpl implements DataServiceFacade {
         return dataManipulator.findDuplicateTitles(dataDownloader.fetchPostData());
     }
 
-    @Override public Map<User, User> findClosestUsers() {
+    @Override public Set<ClosestUserPairDto> findClosestUsers() {
         return dataManipulator.findClosestUser(dataDownloader.fetchUserData());
     }
 }

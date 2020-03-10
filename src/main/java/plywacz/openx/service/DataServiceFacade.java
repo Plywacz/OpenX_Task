@@ -4,11 +4,10 @@ Author: BeGieU
 Date: 06.03.2020
 */
 
-import plywacz.openx.model.User;
+import plywacz.openx.dto.ClosestUserPairDto;
 import plywacz.openx.model.UserPostContainer;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface DataServiceFacade {
@@ -39,5 +38,5 @@ public interface DataServiceFacade {
     /**
      * @return map where key is one user and value is user who lives closest to key user.
      */
-    Map<User, User> findClosestUsers();
+    Set<ClosestUserPairDto> findClosestUsers();
 }

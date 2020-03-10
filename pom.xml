@@ -71,6 +71,16 @@
         </dependency>
 
 
+<!--        tmp graph-->
+        <!-- https://mvnrepository.com/artifact/org.jgrapht/jgrapht-jdk1.5 -->
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-jdk1.5</artifactId>
+            <version>0.7.3</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
