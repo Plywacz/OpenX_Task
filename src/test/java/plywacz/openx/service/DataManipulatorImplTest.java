@@ -70,7 +70,7 @@ class DataManipulatorImplTest {
         var postSet = new HashSet<Post>();
         postSet.add(post1);
 
-        assertThrows(RuntimeException.class, () -> dataManipulator.joinData(userSet, postSet));
+        dataManipulator.joinData(userSet, postSet);
     }
 
     @Test

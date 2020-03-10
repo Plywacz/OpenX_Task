@@ -8,6 +8,7 @@ import plywacz.openx.dto.ClosestUserPairDto;
 import plywacz.openx.model.UserPostContainer;
 import plywacz.openx.service.DataServiceFacade;
 
+
 import java.util.List;
 import java.util.Set;
 
