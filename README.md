@@ -1,2 +1,2 @@
 # OpenX_task
-recrutation task for openX
+Zadanie rekrutacyjne dla firmy OpenX, wariant drugi. Testy sprawdzający poprawność działania aplikacji w folderze tests.
